@@ -6,20 +6,129 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://antonio:19528974@localhost:5432/puppies';
+var connectionString = 'postgres://admin:Am19528974!@localhost:5432/cardaz';
 var db = pgp(connectionString);
 
 //add query functions
 //defines the query calls
 module.exports = {
 
+	/*
 	getAllPuppies: getAllPuppies,
 	getSinglePuppy: getSinglePuppy,
 	createPuppy: createPuppy,
 	updatePuppy: updatePuppy,
-	removePuppy: removePuppy
+	removePuppy: removePuppy,
+	*/
+
+	getAllAddresses: getAllAddresses,
+	getOneAddress: getOneAddress,
+	createAddress: createAddress,
+	updateAddress: updateAddress,
+	removeAddress: removeAddress,
+
+	getAllPatients: getAllPatients,
+	getOnePatient: getOnePatient,
+	createPatient: createPatient,
+	updatePatient: updatePatient,
+	removePatient: removePatient,
+
+	getAllHeartrecords: getAllHeartrecords,
+	getOneHeartrecord: getOneHeartrecord,
+	createHeartrecord: createHeartrecord,
+	updateHeartrecord: updateHeartrecord,
+	removeHeartrecord: removeHeartrecord,
+
+	getAllRecords: getAllRecords,
+	getOneRecord: getOneRecord,
+	createRecord: createRecord,
+	updateRecord: updateRecord,
+	removeRecord: removeRecord,
+
+
 };
 
+/*
+*	ADDRESS TABLE QUERIES ONLY
+*/
+
+function getAllAddresses(req, res, next){
+}
+
+function getOneAddress(req, res, next){
+}
+
+function createAddress(req, res, next){
+}
+
+function updateAddress(req, res, next){
+}
+
+function removeAddress(req, res, next){
+}
+
+
+/*
+*	PATIENT TABLE QUERIES ONLY
+*/
+
+function getAllPatients(req, res, next){
+}
+
+function getOnePatient(req, res, next){
+}
+
+function createPatient(req, res, next){
+}
+
+function updatePatient(req, res, next){
+}
+
+function removePatient(req, res, next){
+}
+
+
+/*
+*	HEARTDATA TABLE QUERIES ONLY
+*/
+
+function getAllHeartrecords(req, res, next){
+}
+
+function getOneHeartrecord(req, res, next){
+}
+
+function createHeartrecord(req, res, next){
+}
+
+function updateHeartrecord(req, res, next){
+}
+
+function removeHeartrecord(req, res, next){
+}
+
+
+/*
+*	WEB RECORD TABLE QUERIES ONLY
+*/
+
+function getAllRecords(req, res, next){
+}
+
+function getOneRecord(req, res, next){
+}
+
+function createRecord(req, res, next){
+}
+
+function updateRecord(req, res, next){
+}
+
+function removeRecord(req, res, next){
+}
+
+
+/*
 function getAllPuppies(req, res, next){
 	db.any('select * from pups') //do this and expect results
 	
@@ -109,3 +218,5 @@ function removePuppy(req, res, next){
 		return next(err);
 	});
 }
+
+*/

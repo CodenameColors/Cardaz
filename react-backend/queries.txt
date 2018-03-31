@@ -1,0 +1,13 @@
+This is here so i can keep track of how to do what. Its going to help ALOT when setting up the main API
+
+Here's how to grab every column, for all the rows of one patient. EACH TABLE.
+SELECT * FROM patient LEFT OUTER JOIN address ON patient.id = address.patient_id        inner join heartdata ON patient.id = heartdata.patient_id;
+
+Here's how to grab the record data for the web page to display
+SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number,
+address.street, address.city, address.state, address.zip_code
+FROM patient inner join address
+ON patient.id = address.patient_id;
+
+
+
