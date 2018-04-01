@@ -291,7 +291,6 @@ function createHeartrecord(req, res, next){
 	//req.body.rawdata = '\\x' + req.body.rawdata.to
 
 	var strHex = " "
-	//ween = console.log(ascii_to_hexa(req.body.raw_heart_data))
 	strHex = ascii_to_hexa(req.body.raw_heart_data)
 	//console.log(strHex)
 
@@ -314,10 +313,16 @@ function createHeartrecord(req, res, next){
 }
 
 function updateHeartrecord(req, res, next){
+
+
+	var strHex = " "
+	strHex = ascii_to_hexa(req.body.raw_heart_data)
+	//console.log(strHex)
+
 	//set up sql query. this won't return anything back. from the database
 	db.none('update heartdata set bpm =$1, raw_heart_data=$2 \
 		where id=$3',
-		[parseInt(req.body.bpm), req.body.rawdata, parseInt(req.params.id)])
+		[parseInt(req.body.bpm), strHex, parseInt(req.params.id)])
 
 	.then( function (){
 		res.status(200)
@@ -333,6 +338,20 @@ function updateHeartrecord(req, res, next){
 }
 
 function removeHeartrecord(req, res, next){
+	var heartID = parseInt(req.params.id);
+	db.result('delete from heartdata where id = $1', heartID)
+
+	.then( function (result){
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'removed 1 heart record',
+			id: heartID
+		});
+	})
+	.catch(function (err) {
+		return next(err);
+	});
 }
 
 
