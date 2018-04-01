@@ -13,14 +13,6 @@ var db = pgp(connectionString);
 //defines the query calls
 module.exports = {
 
-	/*
-	getAllPuppies: getAllPuppies,
-	getSinglePuppy: getSinglePuppy,
-	createPuppy: createPuppy,
-	updatePuppy: updatePuppy,
-	removePuppy: removePuppy,
-	*/
-
 	getAllAddresses: getAllAddresses,
 	getOneAddress: getOneAddress,
 	createAddress: createAddress,
@@ -41,10 +33,15 @@ module.exports = {
 
 	getAllRecords: getAllRecords,
 	getOneRecord: getOneRecord,
-	createRecord: createRecord,
-	updateRecord: updateRecord,
-	removeRecord: removeRecord,
 
+	
+	FilterFName: FilterFName
+	/*
+	FilterLname: FilterLName,
+	FilterCity: FilterCity,
+	FilterState: FilterState,
+	FilterZipcode: FilterZipcode
+	*/
 
 };
 
@@ -360,20 +357,89 @@ function removeHeartrecord(req, res, next){
 */
 
 function getAllRecords(req, res, next){
+
+	db.any('SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
+		,address.street, address.city, address.zip_code \
+		FROM patient inner join address \
+		ON patient.id = address.patient_id'
+) //ON patient.id = address.patient_id') //do this and expect results
+	
+	.then(function (data){ // this block is the true block
+	res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved all WEB heart records'
+		});
+	})
+	.catch(function (err){  //this block is the false block
+		return next(err);  //return the error 
+	});
 }
 
 function getOneRecord(req, res, next){
+	var recordID = parseInt(req.params.id)  //the params is url. and the .id is :[num]
+	db.one('SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
+		,address.street, address.city, address.zip_code \
+		FROM patient inner join address \
+		ON patient.id = address.patient_id where patient.id = $1', recordID)
+
+	.then(function (data){
+		res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved ONE heart record'
+		});
+	})
+	.catch(function( err ){
+		return next(err);
+	});
 }
 
-function createRecord(req, res, next){
+
+function FilterFName(req, res, next){
+	var filter = req.params.finitial //the params is url. and the .id is :[num]
+	db.one("SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
+		,address.street, address.city, address.zip_code \
+		FROM patient inner join address \
+		ON patient.id = address.patient_id where patient.first_name LIKE $1\
+		", (filter + '%') )
+		//where patient.first_name LIKE "A%"\
+
+	.then(function (data){
+		res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved ONE heart record'
+		});
+	})
+	.catch(function( err ){
+		return next(err);
+	});
 }
 
-function updateRecord(req, res, next){
+/*
+function FilterLName(req, res, next){
+	
 }
 
-function removeRecord(req, res, next){
+function FilterCity(req, res, next){
+	
 }
 
+function FilterState(req, res, next){
+	
+}
+
+function FilterZipcode(req, res, next){
+	
+}
+*/
+
+//there is no reason to create a record, update, or remove. The web records are here only to 
+//show on the web page.
 
 /*
 function getAllPuppies(req, res, next){

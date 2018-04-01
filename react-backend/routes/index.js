@@ -48,11 +48,20 @@ router.delete('/api/heartrecord/:id', db.removeHeartrecord)
 */
 router.get('/api/record', db.getAllRecords);
 router.get('/api/record/:id', db.getOneRecord);
-router.post('/api/record', db.createRecord);
-router.put('/api/record/:id', db.updateRecord)
-router.delete('/api/record/:id', db.removeRecord)
 
+/*
+*	routing for the filtering queries
+*/
 
+router.get('/api/filter/firstname/:finitial', db.FilterFName);
+
+/*
+router.get('/api/filter/lastname', db.FilterLName);
+router.get('/api/filter/city', db.FilterCity);
+router.get('/api/filter/state', db.FilterState);
+router.get('/api/filter/zipcode', db.FilterZipcode);
+
+*/
 
 // OLD TESTING DELETE THIS LATER.
 /*
