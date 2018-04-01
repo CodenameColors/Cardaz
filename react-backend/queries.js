@@ -53,6 +53,7 @@ module.exports = {
 */
 
 function getAllAddresses(req, res, next){
+
 }
 
 function getOneAddress(req, res, next){
@@ -73,18 +74,93 @@ function removeAddress(req, res, next){
 */
 
 function getAllPatients(req, res, next){
+	db.any('select * from patient') //do this and expect results
+	
+	.then(function (data){ // this block is the true block
+	res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved all patients'
+		});
+	})
+	.catch(function (err){  //this block is the false block
+		return next(err);  //return the error 
+	});
 }
 
 function getOnePatient(req, res, next){
+	var patientID = parseInt(req.params.id)  //the params is url. and the .id is :[num]
+	db.one('select * from patient where id = $1', patientID)
+
+	.then(function (data){
+		res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved ONE patient'
+		});
+	})
+	.catch(function( err ){
+		return next(err);
+	});
 }
 
 function createPatient(req, res, next){
+	req.body.age = parseInt(req.body.age);
+	//set up the sql query
+	db.result ('insert into patient(first_name, last_name, phone_number, mi)' +
+		'values(${first_name}, ${last_name}, ${phone_number}, ${mi}) returning id', req.body)
+	//tt= t.rows[0].id
+	.then( function (data) {
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'Inserted One patient',
+			id: data.rows[0].id
+			
+		});
+	})
+	.catch(function (err){
+		return next(err);
+	});
 }
 
 function updatePatient(req, res, next){
+		//set up sql query. this won't return anything back. from the database
+	db.none('update patient set first_name =$1, last_name=$2, phone_number=$3, mi=$4 \
+		where id=$5',
+		[req.body.first_name, req.body.last_name, req.body.phone_number, 
+		req.body.mi, parseInt(req.params.id)])
+
+	.then( function (){
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'Updaated patient record',
+			id: req.params.id
+		});
+	})
+	.catch ( function( err){
+		return next(err);
+	})
 }
 
 function removePatient(req, res, next){
+	var patientID = parseInt(req.params.id);
+	db.result('delete from patient where id = $1', patientID)
+
+	.then( function (result){
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'removed 1 patient',
+			id: patientID
+		});
+	})
+	.catch(function (err) {
+		return next(err);
+	});
 }
 
 
