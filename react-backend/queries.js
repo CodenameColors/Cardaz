@@ -455,7 +455,7 @@ function FilterCity(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for lname'
+			message: 'Retrieved ONE patient record filtered for city'
 		});
 	})
 	.catch(function( err ){
@@ -464,11 +464,47 @@ function FilterCity(req, res, next){
 }
 
 function FilterState(req, res, next){
-	
+	var filter = (req.params.state).toLowerCase() //the params is url. and the .id is :[num]
+	db.one("SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
+		,address.street, address.city, address.state, address.zip_code \
+		FROM patient inner join address \
+		ON patient.id = address.patient_id where LOWER(address.state) LIKE $1\
+		", ('%' + filter + '%') )
+		//where patient.first_name LIKE "A%"\
+
+	.then(function (data){
+		res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved ONE patient record filtered for state'
+		});
+	})
+	.catch(function( err ){
+		return next(err);
+	});
 }
 
 function FilterZipcode(req, res, next){
-	
+	var filter = req.params.zip //the params is url. and the .id is :[num]
+	db.one("SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
+		,address.street, address.city, address.state, address.zip_code \
+		FROM patient inner join address \
+		ON patient.id = address.patient_id where LOWER(address.zip_code) LIKE $1\
+		", ('%' + filter + '%') )
+		//where patient.first_name LIKE "A%"\
+
+	.then(function (data){
+		res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved ONE patient record filtered for state'
+		});
+	})
+	.catch(function( err ){
+		return next(err);
+	});
 }
 
 //there is no reason to create a record, update, or remove. The web records are here only to 

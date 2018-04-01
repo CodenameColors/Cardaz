@@ -56,8 +56,8 @@ router.get('/api/record/:id', db.getOneRecord);
 router.get('/api/filter/firstname/:finitial', db.FilterFName);
 router.get('/api/filter/lastname/:linitial', db.FilterLName);
 router.get('/api/filter/city/:city', db.FilterCity);
-router.get('/api/filter/state', db.FilterState);
-router.get('/api/filter/zipcode', db.FilterZipcode);
+router.get('/api/filter/state/:state', db.FilterState);
+router.get('/api/filter/zipcode/:zip', db.FilterZipcode);
 
 
 // OLD TESTING DELETE THIS LATER.
