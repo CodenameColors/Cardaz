@@ -48,24 +48,109 @@ module.exports = {
 
 };
 
+
+function ascii_to_hexa(str)
+  {
+    var arr1 = [];
+    for (var n = 0, l = str.length; n < l; n ++)
+     {
+        var hex = Number(str.charCodeAt(n)).toString(16);
+        arr1.push(hex);
+     }
+    return arr1.join('');
+   }
+
 /*
 *	ADDRESS TABLE QUERIES ONLY
 */
 
 function getAllAddresses(req, res, next){
-
+	db.any('select * from address') //do this and expect results
+	
+	.then(function (data){ // this block is the true block
+	res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved all addresses'
+		});
+	})
+	.catch(function (err){  //this block is the false block
+		return next(err);  //return the error 
+	});
 }
 
 function getOneAddress(req, res, next){
+	var addressID = parseInt(req.params.id)  //the params is url. and the .id is :[num]
+	db.one('select * from address where id = $1', addressID)
+
+	.then(function (data){
+		res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved ONE address'
+		});
+	})
+	.catch(function( err ){
+		return next(err);
+	});
 }
 
 function createAddress(req, res, next){
+	req.body.patient_id = parseInt(req.body.patient_id);
+	//set up the sql query
+	db.result ('insert into address(patient_id, street, city, state, zip_code)' +
+		'values(${patient_id}, ${street}, ${city}, ${state}, ${zip}) returning id', req.body)
+	.then( function (data) {
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'Inserted One address',
+			id: data.rows[0].id
+			
+		});
+	})
+	.catch(function (err){
+		return next(err);
+	});	
 }
 
 function updateAddress(req, res, next){
+	
+	db.none('update address set street =$1, city=$2, state=$3, zip_code=$4 \
+		where id=$5',
+		[req.body.street, req.body.city, req.body.state, 
+		req.body.zip_code, parseInt(req.params.id)])
+
+	.then( function (){
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'Updaated address record',
+			id: req.params.id
+		});
+	})
+	.catch ( function( err){
+		return next(err);
+	})
 }
 
 function removeAddress(req, res, next){
+	var addressID = parseInt(req.params.id);
+	db.result('delete from address where id = $1', addressID)
+
+	.then( function (result){
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'removed 1 address record',
+			id: addressID
+		});
+	})
+	.catch(function (err) {
+		return next(err);
+	});
 }
 
 
@@ -107,7 +192,6 @@ function getOnePatient(req, res, next){
 }
 
 function createPatient(req, res, next){
-	req.body.age = parseInt(req.body.age);
 	//set up the sql query
 	db.result ('insert into patient(first_name, last_name, phone_number, mi)' +
 		'values(${first_name}, ${last_name}, ${phone_number}, ${mi}) returning id', req.body)
@@ -169,15 +253,83 @@ function removePatient(req, res, next){
 */
 
 function getAllHeartrecords(req, res, next){
+	db.any('select * from heartdata') //do this and expect results
+	
+	.then(function (data){ // this block is the true block
+	res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved all heart records'
+		});
+	})
+	.catch(function (err){  //this block is the false block
+		return next(err);  //return the error 
+	});
 }
 
 function getOneHeartrecord(req, res, next){
+	var heartID = parseInt(req.params.id)  //the params is url. and the .id is :[num]
+	db.one('select * from heartdata where id = $1', heartID)
+
+	.then(function (data){
+		res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Retrieved ONE heart record'
+		});
+	})
+	.catch(function( err ){
+		return next(err);
+	});
+
 }
 
 function createHeartrecord(req, res, next){
+	//set up the sql query
+	//req.body.rawdata = '\\x' + req.body.rawdata.to
+
+	var strHex = " "
+	//ween = console.log(ascii_to_hexa(req.body.raw_heart_data))
+	strHex = ascii_to_hexa(req.body.raw_heart_data)
+	//console.log(strHex)
+
+	db.result ("insert into heartdata(bpm, raw_heart_data) values(89, \
+	 (select decode($1, 'hex'))) returning id", strHex.toString()
+)
+	//tt= t.rows[0].id
+	.then( function (data) {
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'Inserted One patient',
+			id: data.rows[0].id
+			
+		});
+	})
+	.catch(function (err){
+		return next(err);
+	});
 }
 
 function updateHeartrecord(req, res, next){
+	//set up sql query. this won't return anything back. from the database
+	db.none('update heartdata set bpm =$1, raw_heart_data=$2 \
+		where id=$3',
+		[parseInt(req.body.bpm), req.body.rawdata, parseInt(req.params.id)])
+
+	.then( function (){
+		res.status(200)
+		.json({
+			status: 'success',
+			message: 'Updaated heart record',
+			id: req.params.id
+		});
+	})
+	.catch ( function( err){
+		return next(err);
+	})
 }
 
 function removeHeartrecord(req, res, next){
