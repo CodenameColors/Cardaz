@@ -54,14 +54,11 @@ router.get('/api/record/:id', db.getOneRecord);
 */
 
 router.get('/api/filter/firstname/:finitial', db.FilterFName);
-
-/*
-router.get('/api/filter/lastname', db.FilterLName);
-router.get('/api/filter/city', db.FilterCity);
+router.get('/api/filter/lastname/:linitial', db.FilterLName);
+router.get('/api/filter/city/:city', db.FilterCity);
 router.get('/api/filter/state', db.FilterState);
 router.get('/api/filter/zipcode', db.FilterZipcode);
 
-*/
 
 // OLD TESTING DELETE THIS LATER.
 /*
