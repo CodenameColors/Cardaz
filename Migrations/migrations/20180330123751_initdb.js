@@ -16,7 +16,7 @@ exports.up = function(knex, Promise) {
 		  table.string('street').notNullable()
 		  table.string('city').notNullable()
 		  table.string('state').notNullable()
-		  table.integer('zip code').notNullable()
+		  table.string('zip_code').notNullable()
 	  }),
 	  
 	  knex.schema.createTableIfNotExists('heartdata', (table) => {
