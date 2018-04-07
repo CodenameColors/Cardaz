@@ -410,7 +410,7 @@ function FilterFName(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for fname'
+			message: 'Retrieved patient records filtered for fname'
 		});
 	})
 	.catch(function( err ){
@@ -433,7 +433,7 @@ function FilterLName(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for lname'
+			message: 'Retrieved patient records filtered for lname'
 		});
 	})
 	.catch(function( err ){
@@ -455,7 +455,7 @@ function FilterCity(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for city'
+			message: 'Retrieved patient records filtered for city'
 		});
 	})
 	.catch(function( err ){
@@ -477,7 +477,7 @@ function FilterState(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for state'
+			message: 'Retrieved patient records filtered for state'
 		});
 	})
 	.catch(function( err ){
@@ -499,7 +499,7 @@ function FilterZipcode(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for state'
+			message: 'Retrieved patient records filtered for zip ode'
 		});
 	})
 	.catch(function( err ){

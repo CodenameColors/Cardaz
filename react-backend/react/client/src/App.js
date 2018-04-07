@@ -2,7 +2,44 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Header,
+  StackNavigator,
+  MyHomeScreen,
+  Animated,
+  Easing,
+  ScrollView,
+  RefreshControl,
+  AppRegistry
+} from 'react';
+
+import { BrowserRouter, HashRouter, Route, Switch } from 'react-router-dom';
+
+const Headertest = (props) => (
+
+  <div>
+    <img src={props.src}/>
+  </div>
+
+  )
+
+class App extends Component{
+  render(){
+    return(
+      <BrowserRouter>
+        <HomePage />
+      </BrowserRouter>
+    
+    )
+  }
+}
+
+
+class HomePage extends Component {
   state = {users: []}
 
   componentDidMount() {
@@ -102,9 +139,12 @@ class App extends Component {
     }  
   }
 
+
+
   render() {
     return (
       <div className="App">
+      <Headertest src={require('./images/heartbeat_header.png')}/>
       <img src={logo} className="App-logo" alt="logo" />
         <h1 className="App-title">Users</h1>
         <button onClick={this.puppydata}>
