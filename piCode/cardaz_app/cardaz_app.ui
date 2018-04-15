@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="login_form">
      <widget class="QLabel" name="label">
@@ -522,7 +522,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="page">
+    <widget class="QWidget" name="select_account">
      <widget class="QListWidget" name="listWidget">
       <property name="geometry">
        <rect>
@@ -532,6 +532,16 @@
         <height>201</height>
        </rect>
       </property>
+      <item>
+       <property name="text">
+        <string>test 1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>test 2</string>
+       </property>
+      </item>
      </widget>
      <widget class="QLabel" name="start_info_Label">
       <property name="geometry">
@@ -556,11 +566,11 @@
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string>Ready</string>
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="page_2">
+    <widget class="QWidget" name="hgraph">
      <widget class="QPushButton" name="back_BTN">
       <property name="geometry">
        <rect>
@@ -574,13 +584,13 @@
        <string>back</string>
       </property>
      </widget>
-     <widget class="QGraphicsView" name="heart_graph">
+     <widget class="PlotWidget" name="heart_graph">
       <property name="geometry">
        <rect>
-        <x>40</x>
+        <x>10</x>
         <y>40</y>
-        <width>611</width>
-        <height>221</height>
+        <width>671</width>
+        <height>271</height>
        </rect>
       </property>
      </widget>
@@ -589,6 +599,13 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">pyqtgraph.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
