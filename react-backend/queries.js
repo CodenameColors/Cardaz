@@ -265,7 +265,7 @@ function getAllHeartrecords(req, res, next){
 
 function getOneHeartrecord(req, res, next){
 	var heartID = parseInt(req.params.id)  //the params is url. and the .id is :[num]
-	db.one('select * from heartdata where id = $1', heartID)
+	db.any('select * from heartdata where patient_id = $1', heartID)
 
 	.then(function (data){
 		res.status(200)
@@ -357,7 +357,7 @@ function removeHeartrecord(req, res, next){
 function getAllRecords(req, res, next){
 
 	db.any('SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
-		,address.street, address.city, address.zip_code \
+		,address.street, address.city, address,state, address.zip_code \
 		FROM patient inner join address \
 		ON patient.id = address.patient_id'
 ) //ON patient.id = address.patient_id') //do this and expect results
@@ -378,7 +378,7 @@ function getAllRecords(req, res, next){
 function getOneRecord(req, res, next){
 	var recordID = parseInt(req.params.id)  //the params is url. and the .id is :[num]
 	db.one('SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
-		,address.street, address.city, address.zip_code \
+		,address.street, address.city , address,state, address.zip_code \
 		FROM patient inner join address \
 		ON patient.id = address.patient_id where patient.id = $1', recordID)
 
