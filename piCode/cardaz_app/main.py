@@ -36,6 +36,35 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
     #define button callback
     def pressedYes(self):
         self.form_tabcontrol.setCurrentIndex(2)
+        
+        conn = psycopg2.connect(host='localhost', database='cardaz', user='antonio', password='19528974')
+        print("connecting to PSQL database")
+        cur = conn.cursor()
+        
+        query = 'SELECT patient.id, patient.first_name, patient.mi, patient.last_name, patient.phone_number'
+        query +=', address.street, address.city, address.state, address.zip_code'
+        query +=' FROM patient inner join address ON patient.id = address.patient_id;'
+        
+        item = QListWidgetItem("id\t fName \t LName \t Street \t\t City \t\t ZipCode")
+        self.listWidget.addItem(item)
+        
+        test = cur.execute(query)
+        for record in cur:
+            print(record)
+            item = QListWidgetItem("" + str(record[0]) + "\t" + record[1] +"\t" + record[3]  +"\t" + record[5]  +"\t" + record[6] +"      \t" + record[8] )
+            self.listWidget.addItem(item)
+            self.listWidget.show()
+    
+     
+    #define button callback
+    def pressedReady(self):
+        
+        print( self.listWidget.currentItem().text() )
+        
+        self.form_tabcontrol.setCurrentIndex(3)
+        pitch = [.0,.200,.300,.400,.500,.600]
+        self.heart_graph.plot(pitch)
+        
     
     #define button callback
     def pressedNo(self):
@@ -130,13 +159,7 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
         test = cur.execute(query)
         conn.commit()
         
-    
-    #define button callback
-    def pressedReady(self):
-        self.form_tabcontrol.setCurrentIndex(3)
-        pitch = [.0,.200,.300,.400,.500,.600]
-        self.heart_graph.plot(pitch)
-        
+   
     
     def __init__(self):
         super(self.__class__,self).__init__()

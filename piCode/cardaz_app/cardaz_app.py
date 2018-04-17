@@ -143,10 +143,6 @@ class Ui_cardaz_app(object):
         self.listWidget = QtWidgets.QListWidget(self.select_account)
         self.listWidget.setGeometry(QtCore.QRect(20, 50, 641, 201))
         self.listWidget.setObjectName("listWidget")
-        item = QtWidgets.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.listWidget.addItem(item)
         self.start_info_Label = QtWidgets.QLabel(self.select_account)
         self.start_info_Label.setGeometry(QtCore.QRect(130, 20, 411, 21))
         self.start_info_Label.setObjectName("start_info_Label")
@@ -190,7 +186,7 @@ class Ui_cardaz_app(object):
         cardaz_app.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(cardaz_app)
-        self.form_tabcontrol.setCurrentIndex(4)
+        self.form_tabcontrol.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(cardaz_app)
 
     def retranslateUi(self, cardaz_app):
@@ -258,13 +254,6 @@ class Ui_cardaz_app(object):
         self.state_CB.setItemText(47, _translate("cardaz_app", "Wyoming"))
         self.titlelLabel.setText(_translate("cardaz_app", "Patient infomation Form"))
         self.execute_BTN.setText(_translate("cardaz_app", "Start"))
-        __sortingEnabled = self.listWidget.isSortingEnabled()
-        self.listWidget.setSortingEnabled(False)
-        item = self.listWidget.item(0)
-        item.setText(_translate("cardaz_app", "test 1"))
-        item = self.listWidget.item(1)
-        item.setText(_translate("cardaz_app", "test 2"))
-        self.listWidget.setSortingEnabled(__sortingEnabled)
         self.start_info_Label.setText(_translate("cardaz_app", "Please Select your account, and hit ready to start the test."))
         self.ready_BTN.setText(_translate("cardaz_app", "Ready"))
         self.back_BTN.setText(_translate("cardaz_app", "back"))
