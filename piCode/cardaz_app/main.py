@@ -22,8 +22,11 @@ import pyqtgraph.pyqtgraph as pg
 import psycopg2
 import time
 import numpy as np
+import socket
+import struct
 
-data = [1000]
+UDP_IP = "0.0.0.0" #change to needed ip.
+UDP_PORT = 9000
 
 #create class for the GUI
 class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
@@ -96,7 +99,7 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
             
             timer = pg.QtCore.QTimer()
             timer.timeout.connect(self.updateGraph)
-            timer.start(.5)
+            timer.start(.8) #TODO: Doesn't stop ever.
             pg.QtGui.QApplication.processEvents()
     
     
@@ -105,19 +108,43 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
         #data = [1,2,3,4,5,5,6,7,8,9]
         
         #here is where the UDP listener goes
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind((UDP_IP, UDP_PORT))
+        dataudp, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+        print ("received message:", dataudp)
+        sock.close()
         
-        #then since it will probably be a pact of int data, for loop to graph
         
+        #strarr = dataudp.split(',',1)
+        numarr = []
+            
+            #numarr= int.from_bytes(dataudp, byteorder='big', signed = True)
+        
+        strtemp = dataudp.decode("utf-8")
+        strtemp = strtemp[:-1]
+        print(strtemp)
+        arrtemp = strtemp.split(',')
+        integers=[]
+        print (strtemp)
+        print(arrtemp)
+        for j in range(0,len(arrtemp)):
+            integers.append(int(arrtemp[j]))
+            time.sleep(.0005)
+       
         n = 1000
         rand = np.random.randint(-50, 50)
-        data.append(np.clip(rand, -50,50))
+        #data.append(np.clip(int(arrtemp[0]), -50,50))
+        data = data + integers
+        
         curve.setData(data)
-        i=(i+1)
+        i=(i+100)
         line.setValue(20)
         n = n +1
         if i > 500:
             self.heart_graph.setRange(xRange =[i -500,i+500], yRange=[-50,50])
-    
+        #time.sleep(.005)
+        #then since it will probably be a pact of int data, for loop to graph
+   
     #define button callback
     def pressedNo(self):
         self.form_tabcontrol.setCurrentIndex(1)
