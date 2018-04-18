@@ -104,6 +104,10 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
         global data, curve, i, line
         #data = [1,2,3,4,5,5,6,7,8,9]
         
+        #here is where the UDP listener goes
+        
+        #then since it will probably be a pact of int data, for loop to graph
+        
         n = 1000
         rand = np.random.randint(-50, 50)
         data.append(np.clip(rand, -50,50))
@@ -111,7 +115,8 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
         i=(i+1)
         line.setValue(20)
         n = n +1
-    
+        if i > 500:
+            self.heart_graph.setRange(xRange =[i -500,i+500], yRange=[-50,50])
     
     #define button callback
     def pressedNo(self):
