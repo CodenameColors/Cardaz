@@ -11,11 +11,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_cardaz_app(object):
     def setupUi(self, cardaz_app):
         cardaz_app.setObjectName("cardaz_app")
-        cardaz_app.resize(695, 348)
+        cardaz_app.resize(695, 375)
+        cardaz_app.setAcceptDrops(False)
         self.centralWidget = QtWidgets.QWidget(cardaz_app)
         self.centralWidget.setObjectName("centralWidget")
         self.form_tabcontrol = QtWidgets.QStackedWidget(self.centralWidget)
-        self.form_tabcontrol.setGeometry(QtCore.QRect(0, 20, 691, 301))
+        self.form_tabcontrol.setGeometry(QtCore.QRect(0, 20, 691, 331))
         self.form_tabcontrol.setObjectName("form_tabcontrol")
         self.login_form = QtWidgets.QWidget()
         self.login_form.setObjectName("login_form")
@@ -156,7 +157,7 @@ class Ui_cardaz_app(object):
         self.back_BTN.setGeometry(QtCore.QRect(40, 0, 91, 29))
         self.back_BTN.setObjectName("back_BTN")
         self.heart_graph = PlotWidget(self.hgraph)
-        self.heart_graph.setGeometry(QtCore.QRect(10, 40, 671, 271))
+        self.heart_graph.setGeometry(QtCore.QRect(10, 30, 671, 281))
         self.heart_graph.setObjectName("heart_graph")
         self.form_tabcontrol.addWidget(self.hgraph)
         self.testpsql = QtWidgets.QWidget()
@@ -186,7 +187,7 @@ class Ui_cardaz_app(object):
         cardaz_app.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(cardaz_app)
-        self.form_tabcontrol.setCurrentIndex(2)
+        self.form_tabcontrol.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(cardaz_app)
 
     def retranslateUi(self, cardaz_app):

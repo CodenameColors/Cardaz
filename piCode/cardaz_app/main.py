@@ -18,10 +18,12 @@ from random import *
 
 #get form code.
 import cardaz_app
-
-import pyqtgraph as pg
-
+import pyqtgraph.pyqtgraph as pg
 import psycopg2
+import time
+import numpy as np
+
+data = [1000]
 
 #create class for the GUI
 class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
@@ -33,7 +35,7 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
         self.form_tabcontrol.setCurrentIndex(3)
         #print("testing")
     
-    #define button callback
+    #When the user has pressed the "login button"
     def pressedYes(self):
         self.form_tabcontrol.setCurrentIndex(2)
         
@@ -55,16 +57,61 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
             self.listWidget.addItem(item)
             self.listWidget.show()
     
-     
+    
+    pw = None
+    data = None
+    curve = None
+    i = 0
     #define button callback
+    #occurs when the user presses ready to start the heartbeat test
     def pressedReady(self):
         
-        print( self.listWidget.currentItem().text() )
+        #if the user hasn't picked an account then don't continue the test
+        if(self.listWidget.currentRow() == -1):
+            return
         
+        #find the id of the selected account for storing the heart data later.
+        idtext = self.listWidget.currentItem().text()
+        print( idtext[0: (idtext.find("\t")) ] )
+        
+        #clear the list to avoid multiple record insertions
+        self.listWidget.clear()        
         self.form_tabcontrol.setCurrentIndex(3)
-        pitch = [.0,.200,.300,.400,.500,.600]
-        self.heart_graph.plot(pitch)
+        #time.sleep(3)
         
+        #Set up the parameters for the graph
+        pw = self.heart_graph
+        bufferSize = 1000
+        
+        global curve, line, data, i
+        data = []
+        curve = pw.plot()
+        line = pw.addLine(x=0)
+        pw.setRange(xRange =[0,bufferSize], yRange=[-50,50])
+        i=0
+        
+        #testing stuff, but this is how to plot data boiii
+        #TODO: if you hit back it will save the plot, and never delete even when a re run occurs
+        while True:
+            
+            timer = pg.QtCore.QTimer()
+            timer.timeout.connect(self.updateGraph)
+            timer.start(.5)
+            pg.QtGui.QApplication.processEvents()
+    
+    
+    def updateGraph(self):
+        global data, curve, i, line
+        #data = [1,2,3,4,5,5,6,7,8,9]
+        
+        n = 1000
+        rand = np.random.randint(-50, 50)
+        data.append(np.clip(rand, -50,50))
+        curve.setData(data)
+        i=(i+1)
+        line.setValue(20)
+        n = n +1
+    
     
     #define button callback
     def pressedNo(self):
