@@ -3,8 +3,10 @@ import logo from './logo.svg';
 import './App.css';
 
 
-import { BrowserRouter, HashRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Route, Switch, Link, withRouter, } from 'react-router-dom';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+
+import Record from './pages/record'
 
 const Headertest = (props) => (
 
@@ -18,7 +20,7 @@ class App extends Component{
   render(){
     return(
       <BrowserRouter>
-        <HomePage />
+        <HomePage/>
       </BrowserRouter>
     
     )
@@ -27,6 +29,7 @@ class App extends Component{
 
 
 
+const showTable = true;
 
 const products = [];
 
@@ -36,7 +39,19 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function openInNewTab(url) {
+  var win = window.open(url,'_blank');
+  win.focus();
+}
+
 class HomePage extends Component {
+
+   constructor(props) {
+    super(props);
+    this.state = {
+      hidden: false
+    };
+  }
 
 
   state = {users: []}
@@ -48,8 +63,6 @@ class HomePage extends Component {
       this.addProducts(5);
       this.state.products = [];
   }
-
-
 
 addProducts = (quantity) => {
 
@@ -103,26 +116,6 @@ addProducts = (quantity) => {
   }
   xhr.send('xhr', xhr); 
 }
-/*
-function fxs(quantity){
-
-  const startId = products.length;
-  for (let i = 0; i < quantity; i++) {
-    //var t = jsonResponse;
-    const id = startId + i;
-    products.push({
-      id: jsonResponse.data[0].id,
-      name: 'Item name ',
-      price: 'dumb'
-    });
-    console.log(products[0].name);
-
-  }
-}
-*/
-
-
-
 
   puppydata = () => {
     console.log("Selecting");
@@ -152,15 +145,14 @@ function fxs(quantity){
 
   render() {
 
-  const options = {
-    
-    onRowClick: function(row) {
-      console.log('hewwo');
-      alert(`You click row id: ${row.id}`);
-      },
-
-  }
   
+  
+
+  const handleBtnClick = () => {
+    this.setState({
+      hidden: !this.state.hidden
+    });
+  }
 
     const selectRowProp = {
       mode: 'checkbox',
@@ -170,9 +162,58 @@ function fxs(quantity){
 
     return (
       <div className="App">
-      <Headertest src={require('./images/heartbeat_header.png')}/>
+        <Headertest src={require('./images/heartbeat_header.png')}/>
+        {this.showTable ? (<RecordTable/>) : (<PRecord/>)}
+      </div>
+
+    );
+  }
+}
+
+class RecordTable extends Component{
+
+   constructor(props) {
+    super(props);
+    this.state = {
+      hidden: false
+    };
+  }
+
+
+  state = {users: []}
+
+  componentDidMount() {
+    fetch('/users')
+      .then(res => res.json())
+      .then(users => this.setState({ users }));
+  }
+
+
+  render(){
+    //describes the events for each row.
+  const options = {
+
+    //defines the function that runs when a row is clicked.
+    onRowClick: function(row) {
+      console.log('hewwo');
+      alert(`You click row id: ${row.id}`);
+      this.tableRecord = false;
+      this.forceUpdate();
+      //openInNewTab('record');
+      },
+      
+  }
+
+  const selectRowProp = {
+    mode: 'checkbox',
+    hideSelectColumn: true,  // enable hide selection column.
+    clickToSelect: true  // enable click to select
+  };
+
+
+    return( <div>
+  <h1>Filters</h1>  
       <span>
-      <h1>Filters</h1>  
         First Name: <input type='text' name='title' value={this.state.title} />  
         Last Name: <input type='text' name='title' value={this.state.title} />  
         Zip Code: <input type='text' name='title' value={this.state.title} />  
@@ -180,21 +221,47 @@ function fxs(quantity){
       <button onClick={this.puppydata}>
           Get Record
       </button>
-    <BootstrapTable data={ products }  selectRow={selectRowProp} options={options}>
-      <TableHeaderColumn width='150' dataField='id' isKey={ true }>Patient ID</TableHeaderColumn>
-      <TableHeaderColumn width='150' dataField='first_name'>First Name</TableHeaderColumn>
-      <TableHeaderColumn width='150' dataField='last_name'>Last Name</TableHeaderColumn>
-      <TableHeaderColumn width='150' dataField='phone_number'>Phone Number</TableHeaderColumn>
-      <TableHeaderColumn width='150' dataField='street'>Street</TableHeaderColumn>
-      <TableHeaderColumn width='150' dataField='city'>City</TableHeaderColumn>
-      <TableHeaderColumn width='150' dataField='state'>State</TableHeaderColumn>
-      <TableHeaderColumn width='150' dataField='zip_code'>Zip Code</TableHeaderColumn>
-    </BootstrapTable>
+    <BrowserRouter>
+
+    <div id='tableRecord'>
+     <Link to="/record">
+      <BootstrapTable data={ products }  selectRow={selectRowProp} options={options}  >
+
+          <TableHeaderColumn width='150' dataField='id' isKey={ true }  >Patient ID</TableHeaderColumn>
+          <TableHeaderColumn width='150' dataField='first_name'>First Name</TableHeaderColumn>
+          <TableHeaderColumn width='150' dataField='last_name'>Last Name</TableHeaderColumn>
+          <TableHeaderColumn width='150' dataField='phone_number'>Phone Number</TableHeaderColumn>
+          <TableHeaderColumn width='150' dataField='street'>Street</TableHeaderColumn>
+          <TableHeaderColumn width='150' dataField='city'>City</TableHeaderColumn>
+          <TableHeaderColumn width='150' dataField='state'>State</TableHeaderColumn>
+          <TableHeaderColumn width='150' dataField='zip_code'>Zip Code</TableHeaderColumn>
+      
+      </BootstrapTable>
+        </Link>
       </div>
-    );
+    </BrowserRouter>
+    </div>
+    )
   }
 }
 
+class PRecord extends Component {
 
+  GoBack = () => {
+    this.tableRecord = true;
+    this.forceUpdate();
+  }
+
+
+  render(){
+  return (
+    <div> ughhhhh
+    <button onClick={this.GoBack}>
+          Get Record
+      </button>
+      </div>
+    )
+  }
+}
 
 export default App;
