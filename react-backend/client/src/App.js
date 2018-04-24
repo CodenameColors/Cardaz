@@ -5,6 +5,7 @@ import './App.css';
 
 import { BrowserRouter, HashRouter, Route, Switch, Link, withRouter, } from 'react-router-dom';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import {LineChart} from 'react-easy-chart';
 
 import Record from './pages/record'
 
@@ -29,8 +30,7 @@ class App extends Component{
 
 
 
-const showTable = true;
-
+let showTable = true;
 const products = [];
 
 
@@ -49,12 +49,14 @@ class HomePage extends Component {
    constructor(props) {
     super(props);
     this.state = {
-      hidden: false
+      showTable: true,
+      recID: 0
     };
   }
 
 
   state = {users: []}
+
 
   componentDidMount() {
     fetch('/users')
@@ -136,23 +138,22 @@ addProducts = (quantity) => {
           var data = xhr.responseText;
           var jsonResponse = JSON.parse(data);
           console.log(jsonResponse.data[0].first_name);
-                  }
+        }
       }
     }
   }
 
+  ToggleFn= () => {
+    this.setState({showTable: !this.state.showTable});
+  }
+
+  setRecID = (id) => {
+    this.setState({recID: id})
+  }
 
 
   render() {
 
-  
-  
-
-  const handleBtnClick = () => {
-    this.setState({
-      hidden: !this.state.hidden
-    });
-  }
 
     const selectRowProp = {
       mode: 'checkbox',
@@ -160,10 +161,11 @@ addProducts = (quantity) => {
       clickToSelect: true  // enable click to select
     };
 
+
     return (
       <div className="App">
         <Headertest src={require('./images/heartbeat_header.png')}/>
-        {this.showTable ? (<RecordTable/>) : (<PRecord/>)}
+        {this.state.showTable ? (<RecordTable ToggleFn = {this.ToggleFn}  setRecID = {this.setRecID}/>) : (<PRecord ToggleFn = {this.ToggleFn} recordID = {this.state.recID}/>)}
       </div>
 
     );
@@ -190,18 +192,23 @@ class RecordTable extends Component{
 
 
   render(){
-    //describes the events for each row.
+  let renderObject = this;
+  //describes the events for each row.
   const options = {
 
     //defines the function that runs when a row is clicked.
-    onRowClick: function(row) {
+    onRowClick: (row) => {
       console.log('hewwo');
       alert(`You click row id: ${row.id}`);
-      this.tableRecord = false;
-      this.forceUpdate();
+      this.props.setRecID(row.id);
+      //let hid = this.state.hidden;
+      //hid = false;
+      //renderObject.setState({hid });
+      this.props.ToggleFn();
+      renderObject.forceUpdate();
       //openInNewTab('record');
       },
-      
+   
   }
 
   const selectRowProp = {
@@ -247,19 +254,109 @@ class RecordTable extends Component{
 
 class PRecord extends Component {
 
+
+  fname = "";
+  phone = "";
+  address = "";
+
+   constructor(props) {
+    super(props);
+    this.setRecordValues();
+    this.getRecord();
+    this.state = {
+      heartRecords: [],
+      currentRecord: 0
+    }
+  }
+
+  getRecord = () => {
+
+    var xhr = new XMLHttpRequest();
+
+    var id = 3;
+
+    xhr.open("GET", `http://127.0.0.1:3001/api/record/${this.props.recordID}`, true);
+    xhr.setRequestHeader('Content-type','application/json');
+    xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
+
+    
+
+    console.log(xhr);
+    var data;
+    var jsonResponse;
+    xhr.onreadystatechange = (jsonResponse) => {
+      console.log('in xhr.onload')
+      if(xhr.readyState === 4){
+        console.log('in state 4');
+        if(xhr.status === 200){
+
+          data = xhr.responseText;
+          jsonResponse = JSON.parse(data);
+          //console.log(jsonResponse.data[0]); 
+
+          //let products = this.state.products.splice();
+
+          //console.log(this);
+          let notThis = {}
+          notThis.fname = "Patient Name: " + jsonResponse.data.first_name + " " + jsonResponse.data.last_name;
+          notThis.phone = "Phone#: " + jsonResponse.data.phone_number;
+          notThis.address = "Address: " + jsonResponse.data.street + ", " + jsonResponse.data.city + " " + jsonResponse.data.zip_code;
+          
+          this.setState(notThis)
+          console.log(jsonResponse.data.first_name);
+        
+      }
+    }
+    
+  }
+    xhr.send('xhr', xhr); 
+}
+
+
   GoBack = () => {
     this.tableRecord = true;
     this.forceUpdate();
+    this.props.ToggleFn();
   }
 
+  s = "sssss";
+
+
+  setRecordValues = () => {
+    this.s = "memes"
+  }
 
   render(){
   return (
-    <div> ughhhhh
+    <div> 
     <button onClick={this.GoBack}>
-          Get Record
+          Back To Records
       </button>
+      <div>
+        {this.state.fname}
       </div>
+      <div>
+        {this.state.phone}
+      </div>
+      <div>
+        {this.state.address}
+      </div>
+      <select value={this.state.currentRecord} onChange={(e) => this.setState({ currentRecord: e.target.value })}>
+
+        {this.state.heartRecords.map( (hr) => <option value = {hr.appdate} > {hr.appdate}  </option> )}
+
+      </select>
+
+
+       <LineChart
+    data={[
+      
+      
+      
+    ]}
+  />`
+
+    </div>
     )
   }
 }
