@@ -90,7 +90,7 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
         data = []
         curve = pw.plot()
         line = pw.addLine(x=0)
-        pw.setRange(xRange =[0,bufferSize], yRange=[-50,50])
+        pw.setRange(xRange =[0,200], yRange=[0000,1000])
         i=0
         
         #testing stuff, but this is how to plot data boiii
@@ -140,8 +140,8 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
         i=(i+100)
         line.setValue(20)
         n = n +1
-        if i > 500:
-            self.heart_graph.setRange(xRange =[i -500,i+500], yRange=[-50,50])
+        if i > 100:
+            self.heart_graph.setRange(xRange =[i -300,i+300], yRange=[100,2000])
         #time.sleep(.005)
         #then since it will probably be a pact of int data, for loop to graph
    
