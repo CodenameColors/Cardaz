@@ -181,7 +181,6 @@ class RecordTable extends Component{
     };
   }
 
-
   state = {users: []}
 
   componentDidMount() {
@@ -192,6 +191,7 @@ class RecordTable extends Component{
 
 
   render(){
+
   let renderObject = this;
   //describes the events for each row.
   const options = {
@@ -199,7 +199,7 @@ class RecordTable extends Component{
     //defines the function that runs when a row is clicked.
     onRowClick: (row) => {
       console.log('hewwo');
-      alert(`You click row id: ${row.id}`);
+      //alert(`You click row id: ${row.id}`);
       this.props.setRecID(row.id);
       //let hid = this.state.hidden;
       //hid = false;
@@ -225,9 +225,7 @@ class RecordTable extends Component{
         Last Name: <input type='text' name='title' value={this.state.title} />  
         Zip Code: <input type='text' name='title' value={this.state.title} />  
       </span>
-      <button onClick={this.puppydata}>
-          Get Record
-      </button>
+
     <BrowserRouter>
 
     <div id='tableRecord'>
@@ -265,15 +263,19 @@ class PRecord extends Component {
     this.getRecord();
     this.state = {
       heartRecords: [],
-      currentRecord: 0
+      currentRecord: 0,
+      currentRecordID: 0,
+      rawHdata: []
+
     }
   }
+
+
+
 
   getRecord = () => {
 
     var xhr = new XMLHttpRequest();
-
-    var id = 3;
 
     xhr.open("GET", `http://127.0.0.1:3001/api/record/${this.props.recordID}`, true);
     xhr.setRequestHeader('Content-type','application/json');
@@ -310,6 +312,45 @@ class PRecord extends Component {
     
   }
     xhr.send('xhr', xhr); 
+
+//---------------------------------HEART RECORD ------------------------------------
+
+    let xhr1 =  new XMLHttpRequest();
+    xhr1.open("GET", `http://localhost:3001/api/heartrecord/${this.props.recordID}`, true);
+    xhr1.setRequestHeader('Content-type','application/json');
+    xhr1.setRequestHeader('Access-Control-Allow-Methods','GET');
+
+    
+
+    console.log(xhr1);
+    let data1;
+    let jsonResponse1;
+    xhr1.onreadystatechange = (jsonResponse1) => {
+      console.log('in xhr.onload')
+      if(xhr.readyState === 4){
+        console.log('in state 4');
+        if(xhr.status === 200){
+
+          data1 = xhr1.responseText;
+          jsonResponse1 = JSON.parse(data1);
+          console.log('jsondata');
+          console.log(jsonResponse1.data); 
+
+          //let products = this.state.products.splice();
+
+          //console.log(this);
+          let hr = {}
+          
+          hr = jsonResponse1.data;
+
+          this.setState({heartRecords: jsonResponse1.data})
+          console.log(jsonResponse1.data.first_name);
+        
+      }
+    }
+    
+  }
+    xhr1.send('xhr', xhr); 
 }
 
 
@@ -321,12 +362,36 @@ class PRecord extends Component {
 
   s = "sssss";
 
+  setCurrentRecord = (e) =>{
+
+    this.setState({ currentRecord: e.target.value });
+    console.log(this.state.heartRecords[0].raw_heart_data.data[0]);
+    console.log('currentRecord');
+    console.log(e.target);
+    let tempArray = [];
+
+    let i = this.state.heartRecords[0].id;
+    console.log(i);
+
+    this.state.heartRecords[e.target.selectedIndex].raw_heart_data.data.forEach(function(ele, index){
+      tempArray.push({x:index*5 ,y:ele});
+    }  
+    )
+    this.setState({rawHdata: tempArray});
+
+  }
 
   setRecordValues = () => {
     this.s = "memes"
   }
 
   render(){
+
+    const test = [];
+    test.push({x:1, y:100});
+    test.push({x:2, y:100});
+
+    console.log(this.state.heartRecords);
   return (
     <div> 
     <button onClick={this.GoBack}>
@@ -341,20 +406,17 @@ class PRecord extends Component {
       <div>
         {this.state.address}
       </div>
-      <select value={this.state.currentRecord} onChange={(e) => this.setState({ currentRecord: e.target.value })}>
+      <select value={this.state.currentRecord} onChange={this.setCurrentRecord}>
 
-        {this.state.heartRecords.map( (hr) => <option value = {hr.appdate} > {hr.appdate}  </option> )}
+        {this.state.heartRecords.map( (hr) => <option value = {hr.created_at} > {hr.created_at}  </option> )}
 
       </select>
 
 
-       <LineChart
-    data={[
-      
-      
-      
-    ]}
-  />`
+        <LineChart
+    data={
+        [this.state.rawHdata]}
+      />  
 
     </div>
     )
