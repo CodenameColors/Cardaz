@@ -351,7 +351,7 @@ class PRecord extends Component {
             tempArray.push({x:index*5 ,y:ele});
           }  
           )
-    this.setState({rawHdata: tempArray});
+          this.setState({rawHdata: tempArray});
 
         
       }
@@ -392,10 +392,6 @@ class PRecord extends Component {
 
   render(){
 
-    const test = [];
-    test.push({x:1, y:100});
-    test.push({x:2, y:100});
-
     console.log(this.state.heartRecords);
   return (
     <div> 
@@ -421,9 +417,16 @@ class PRecord extends Component {
 
 
         <LineChart
-    data={
-        [this.state.rawHdata]}
-      />  
+        
+        grid
+        lineColors={['red']}
+        verticalGrid
+        axes
+        axisLabels={{x: 'My x Axis', y: 'My y Axis'}}
+        width={600}
+        height={300}
+        data={[this.state.rawHdata]}
+        />  
 
     </div>
     )
