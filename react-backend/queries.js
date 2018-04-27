@@ -358,7 +358,7 @@ function removeHeartrecord(req, res, next){
 function getAllRecords(req, res, next){
 	console.log("test")
 	db.any('SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
-		,address.street, address.city, address,state, address.zip_code \
+		,address.street, address.city, address.state, address.zip_code \
 		FROM patient inner join address \
 		ON patient.id = address.patient_id'
 ) //ON patient.id = address.patient_id') //do this and expect results
@@ -399,11 +399,11 @@ function getOneRecord(req, res, next){
 function FilterRecords(req, res, next){ //the params is url. and the .id is :[num]
 	console.log(req.query.fname)
 	db.any("SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
-	,address.street, address.city, address.zip_code \
+	,address.street, address.city, address.state, address.zip_code \
 	FROM patient inner join address ON patient.id = address.patient_id \
-	where LOWER(patient.first_name) LIKE '%"+req.query.fname.toLowerCase()+"%' \
-	AND LOWER(patient.last_name) LIKE '%"+req.query.lname.toLowerCase()+"%' \
-	AND address.zip_code LIKE '%"+req.query.zip+"%'")
+	where LOWER(patient.first_name) LIKE '"+req.query.fname.toLowerCase()+"%' \
+	AND LOWER(patient.last_name) LIKE '"+req.query.lname.toLowerCase()+"%' \
+	AND address.zip_code LIKE '"+req.query.zip+"%'")
 
 	.then(function (data){
 		res.status(200)

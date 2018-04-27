@@ -104,7 +104,6 @@ addProducts = (quantity) => {
 
           //let products = this.state.products.splice();
 
-          console.log(this);
           products.push({
             id: jsonResponse.data[i].id,
             first_name: jsonResponse.data[i].first_name,
@@ -115,7 +114,7 @@ addProducts = (quantity) => {
             state: jsonResponse.data[i].state,
             zip_code: jsonResponse.data[i].zip_code
           });
-          this.setState({products});
+          this.setState({products : products});
           console.log(jsonResponse.data[0]);
         }
       }
@@ -160,8 +159,13 @@ class RecordTable extends Component{
    constructor(props) {
     super(props);
     this.state = {
-      hidden: false
+      hidden: false,
+      fname: '',
+      lname: '',
+      zip: '',
+      products: []
     };
+    this.queryFilter()
   }
 
   state = {users: []}
@@ -177,11 +181,9 @@ class RecordTable extends Component{
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", 'http://127.0.0.1:3001/api/filter/Filterrecords/', true)
+    xhr.open("GET", 'http://127.0.0.1:3001/api/filter/Filterrecords/?fname=a&lname=&zip=', true)
     xhr.setRequestHeader('Content-type','application/json');
     xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
-
-    //xhr.send('fname=A&lname=&zip=');
 
     console.log(xhr);
 
@@ -194,8 +196,86 @@ class RecordTable extends Component{
         }
       }
     }
+    xhr.send('xhr', xhr); 
   }
 
+  queryFilter = () => {
+
+    console.log("Selecting");
+
+    var xhr = new XMLHttpRequest();
+
+    let url = "http://127.0.0.1:3001/api/filter/Filterrecords/?" 
+    url += 'fname=' + this.state.fname;
+    url += '&lname=' + this.state.lname;
+    url += '&zip=' + this.state.zip;
+
+    console.log(url)
+
+
+    xhr.open("GET", url, true)
+    xhr.setRequestHeader('Content-type','application/json');
+    xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
+
+    console.log(xhr);
+
+    xhr.onreadystatechange = (e) => {
+      if(xhr.readyState === 4){
+        if(xhr.status === 200){
+          var data = xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          console.log(jsonResponse.data);
+
+          const startId = products.length;
+          for (let i = 0; i < jsonResponse.data.length; i++) {
+          const id = startId + i;
+
+          let temparr = [];
+
+          temparr.push({
+            id: jsonResponse.data[i].id,
+            first_name: jsonResponse.data[i].first_name,
+            last_name: jsonResponse.data[i].last_name,
+            phone_number: jsonResponse.data[i].phone_number,
+            street: jsonResponse.data[i].street,
+            city: jsonResponse.data[i].city,
+            state: jsonResponse.data[i].state,
+            zip_code: jsonResponse.data[i].zip_code
+          });
+          this.setState({products: jsonResponse.data});
+
+          if(jsonResponse.data.length == 0){
+            this.setState({products: []});
+          }
+
+
+          console.log(this.state.products)
+
+        }
+      }
+    }
+  }
+    xhr.send('xhr', xhr); 
+}
+
+  setfname = (e) => {
+    console.log('owo');
+    console.log(e.target);
+    this.setState({fname: e.target.value});
+    this.queryFilter();
+  }
+
+  setlname = (e) => {
+    console.log('owo');
+    this.setState({lname: e.target.value});
+    this.queryFilter();
+  }
+
+  setzip = (e) => {
+    console.log('owo');
+    this.setState({zip: e.target.value});
+    this.queryFilter();
+  }
 
 
   render(){
@@ -224,9 +304,9 @@ class RecordTable extends Component{
     return( <div>
   <h1>Filters</h1>  
       <span>
-        First Name: <input type='text' name='title' value={this.state.title} />  
-        Last Name: <input type='text' name='title' value={this.state.title} />  
-        Zip Code: <input type='text' name='title' value={this.state.title} />  
+        First Name: <input type='text' name='title' value={this.state.fname} onChange={this.setfname}/>  
+        Last Name: <input type='text' name='title' value={this.state.lname} onChange={this.setlname}/>  
+        Zip Code: <input type='text' name='title' value={this.state.zip} onChange={this.setzip}/>  
       </span>
 
       <button onClick={this.puppydata}>
@@ -237,7 +317,7 @@ class RecordTable extends Component{
 
     <div id='tableRecord'>
      <Link to="/record">
-      <BootstrapTable data={ products }  selectRow={selectRowProp} options={options}  >
+      <BootstrapTable data={ this.state.products == [] ? [] : this.state.products }  selectRow={selectRowProp} options={options}  >
 
           <TableHeaderColumn width='150' dataField='id' isKey={ true }  >Patient ID</TableHeaderColumn>
           <TableHeaderColumn width='150' dataField='first_name'>First Name</TableHeaderColumn>
