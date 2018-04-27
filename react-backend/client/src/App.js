@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-
+//switching "pages"
 import { BrowserRouter, HashRouter, Route, Switch, Link, withRouter, } from 'react-router-dom';
+
+//table 
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+
+//Graphing in D3
 import {LineChart} from 'react-easy-chart';
 
-import Record from './pages/record'
+//time formating
+//import  moment from 'react-moment';
+//import 'moment-timezone';
 
 const Headertest = (props) => (
 
@@ -199,14 +205,9 @@ class RecordTable extends Component{
     //defines the function that runs when a row is clicked.
     onRowClick: (row) => {
       console.log('hewwo');
-      //alert(`You click row id: ${row.id}`);
       this.props.setRecID(row.id);
-      //let hid = this.state.hidden;
-      //hid = false;
-      //renderObject.setState({hid });
       this.props.ToggleFn();
       renderObject.forceUpdate();
-      //openInNewTab('record');
       },
    
   }
@@ -261,6 +262,7 @@ class PRecord extends Component {
     super(props);
     this.setRecordValues();
     this.getRecord();
+    //this.setCurrentRecord();
     this.state = {
       heartRecords: [],
       currentRecord: 0,
@@ -342,9 +344,15 @@ class PRecord extends Component {
           let hr = {}
           
           hr = jsonResponse1.data;
-
           this.setState({heartRecords: jsonResponse1.data})
-          console.log(jsonResponse1.data.first_name);
+
+          let tempArray = [];
+          this.state.heartRecords[0].raw_heart_data.data.forEach(function(ele, index){
+            tempArray.push({x:index*5 ,y:ele});
+          }  
+          )
+    this.setState({rawHdata: tempArray});
+
         
       }
     }
@@ -365,13 +373,10 @@ class PRecord extends Component {
   setCurrentRecord = (e) =>{
 
     this.setState({ currentRecord: e.target.value });
-    console.log(this.state.heartRecords[0].raw_heart_data.data[0]);
-    console.log('currentRecord');
-    console.log(e.target);
+    //console.log(Date('2018-03-31T20:50:59.993Z'));
     let tempArray = [];
 
     let i = this.state.heartRecords[0].id;
-    console.log(i);
 
     this.state.heartRecords[e.target.selectedIndex].raw_heart_data.data.forEach(function(ele, index){
       tempArray.push({x:index*5 ,y:ele});
@@ -408,7 +413,9 @@ class PRecord extends Component {
       </div>
       <select value={this.state.currentRecord} onChange={this.setCurrentRecord}>
 
-        {this.state.heartRecords.map( (hr) => <option value = {hr.created_at} > {hr.created_at}  </option> )}
+        {this.state.heartRecords.map( (hr) => <option value = 
+          {hr.created_at} >
+          {hr.created_at}  </option> )}
 
       </select>
 
