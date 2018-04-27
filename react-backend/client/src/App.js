@@ -125,30 +125,7 @@ addProducts = (quantity) => {
   xhr.send('xhr', xhr); 
 }
 
-  puppydata = () => {
-    console.log("Selecting");
-
-    var xhr = new XMLHttpRequest();
-
-    xhr.open("GET", 'http://127.0.0.1:3001/api/record/', true)
-    xhr.setRequestHeader('Content-type','application/json');
-    xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
-
-    xhr.send('xhr', xhr)
-
-    console.log(xhr);
-
-    xhr.onload = function(e){
-      if(xhr.readyState === 4){
-        if(xhr.status === 200){
-          var data = xhr.responseText;
-          var jsonResponse = JSON.parse(data);
-          console.log(jsonResponse.data[0].first_name);
-        }
-      }
-    }
-  }
-
+  
   ToggleFn= () => {
     this.setState({showTable: !this.state.showTable});
   }
@@ -195,6 +172,31 @@ class RecordTable extends Component{
       .then(users => this.setState({ users }));
   }
 
+  puppydata = () => {
+    console.log("Selecting");
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", 'http://127.0.0.1:3001/api/filter/Filterrecords/', true)
+    xhr.setRequestHeader('Content-type','application/json');
+    xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
+
+    //xhr.send('fname=A&lname=&zip=');
+
+    console.log(xhr);
+
+    xhr.onload = function(e){
+      if(xhr.readyState === 4){
+        if(xhr.status === 200){
+          var data = xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          console.log(jsonResponse.data[0]);
+        }
+      }
+    }
+  }
+
+
 
   render(){
 
@@ -226,6 +228,10 @@ class RecordTable extends Component{
         Last Name: <input type='text' name='title' value={this.state.title} />  
         Zip Code: <input type='text' name='title' value={this.state.title} />  
       </span>
+
+      <button onClick={this.puppydata}>
+          Test
+      </button>
 
     <BrowserRouter>
 
