@@ -53,6 +53,7 @@ router.get('/api/record/:id', db.getOneRecord);
 *	routing for the filtering queries
 */
 
+router.get('/api/filter/Filterrecords/', db.FilterRecords);
 router.get('/api/filter/firstname/:finitial', db.FilterFName);
 router.get('/api/filter/lastname/:linitial', db.FilterLName);
 router.get('/api/filter/city/:city', db.FilterCity);

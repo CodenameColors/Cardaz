@@ -39,7 +39,8 @@ module.exports = {
 	FilterLName: FilterLName,
 	FilterCity: FilterCity,
 	FilterState: FilterState,
-	FilterZipcode: FilterZipcode
+	FilterZipcode: FilterZipcode,
+	FilterRecords: FilterRecords
 
 };
 
@@ -265,7 +266,7 @@ function getAllHeartrecords(req, res, next){
 
 function getOneHeartrecord(req, res, next){
 	var heartID = parseInt(req.params.id)  //the params is url. and the .id is :[num]
-	db.one('select * from heartdata where id = $1', heartID)
+	db.any('select * from heartdata where patient_id = $1', heartID)
 
 	.then(function (data){
 		res.status(200)
@@ -355,9 +356,9 @@ function removeHeartrecord(req, res, next){
 */
 
 function getAllRecords(req, res, next){
-
+	console.log("test")
 	db.any('SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
-		,address.street, address.city, address.zip_code \
+		,address.street, address.city, address.state, address.zip_code \
 		FROM patient inner join address \
 		ON patient.id = address.patient_id'
 ) //ON patient.id = address.patient_id') //do this and expect results
@@ -378,7 +379,7 @@ function getAllRecords(req, res, next){
 function getOneRecord(req, res, next){
 	var recordID = parseInt(req.params.id)  //the params is url. and the .id is :[num]
 	db.one('SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
-		,address.street, address.city, address.zip_code \
+		,address.street, address.city , address,state, address.zip_code \
 		FROM patient inner join address \
 		ON patient.id = address.patient_id where patient.id = $1', recordID)
 
@@ -388,6 +389,28 @@ function getOneRecord(req, res, next){
 			status: 'success',
 			data: data,
 			message: 'Retrieved ONE heart record'
+		});
+	})
+	.catch(function( err ){
+		return next(err);
+	});
+}
+
+function FilterRecords(req, res, next){ //the params is url. and the .id is :[num]
+	console.log(req.query.fname)
+	db.any("SELECT patient.id, patient.first_name, patient.last_name, patient.phone_number \
+	,address.street, address.city, address.state, address.zip_code \
+	FROM patient inner join address ON patient.id = address.patient_id \
+	where LOWER(patient.first_name) LIKE '"+req.query.fname.toLowerCase()+"%' \
+	AND LOWER(patient.last_name) LIKE '"+req.query.lname.toLowerCase()+"%' \
+	AND address.zip_code LIKE '"+req.query.zip+"%'")
+
+	.then(function (data){
+		res.status(200)
+		.json({
+			status: 'success',
+			data: data,
+			message: 'Filtered Heart Records'
 		});
 	})
 	.catch(function( err ){
@@ -410,7 +433,7 @@ function FilterFName(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for fname'
+			message: 'Retrieved patient records filtered for fname'
 		});
 	})
 	.catch(function( err ){
@@ -433,7 +456,7 @@ function FilterLName(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for lname'
+			message: 'Retrieved patient records filtered for lname'
 		});
 	})
 	.catch(function( err ){
@@ -455,7 +478,7 @@ function FilterCity(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for city'
+			message: 'Retrieved patient records filtered for city'
 		});
 	})
 	.catch(function( err ){
@@ -477,7 +500,7 @@ function FilterState(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for state'
+			message: 'Retrieved patient records filtered for state'
 		});
 	})
 	.catch(function( err ){
@@ -499,7 +522,7 @@ function FilterZipcode(req, res, next){
 		.json({
 			status: 'success',
 			data: data,
-			message: 'Retrieved ONE patient record filtered for state'
+			message: 'Retrieved patient records filtered for zip ode'
 		});
 	})
 	.catch(function( err ){
