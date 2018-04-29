@@ -165,7 +165,7 @@ class RecordTable extends Component{
       zip: '',
       products: []
     };
-    this.queryFilter()
+    this.queryFilter();
   }
 
   state = {users: []}
@@ -242,12 +242,13 @@ class RecordTable extends Component{
             state: jsonResponse.data[i].state,
             zip_code: jsonResponse.data[i].zip_code
           });
-          this.setState({products: jsonResponse.data});
-
+          
           if(jsonResponse.data.length == 0){
             this.setState({products: []});
           }
-
+          else{
+            this.setState({products: jsonResponse.data});
+          }
 
           console.log(this.state.products)
 
@@ -259,20 +260,16 @@ class RecordTable extends Component{
 }
 
   setfname = (e) => {
-    console.log('owo');
-    console.log(e.target);
     this.setState({fname: e.target.value});
     this.queryFilter();
   }
 
   setlname = (e) => {
-    console.log('owo');
     this.setState({lname: e.target.value});
     this.queryFilter();
   }
 
   setzip = (e) => {
-    console.log('owo');
     this.setState({zip: e.target.value});
     this.queryFilter();
   }
