@@ -478,7 +478,7 @@ console.log("PAIN HERE");
     //console.log(Date('2018-03-31T20:50:59.993Z'));
     let tempArray = [
 		{									
-			color: "steelblue", 
+			color: "red", 
 			points: [] 
 		}
 	  ];
@@ -499,18 +499,6 @@ console.log("PAIN HERE");
   }
 
   render(){
-
-    
-	
-	let t = [
-	{									
-	color: "red", 
-	points: [{x: 1, y: 2}, {x: 3, y: 5}, {x: 7, y: -3}] 
-	}
-	];
-	
-console.log(t);
-
   return (
     <div> 
     <button onClick={this.GoBack}>
