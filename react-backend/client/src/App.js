@@ -10,6 +10,7 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 //Graphing in D3
 import {LineChart} from 'react-easy-chart';
+window.LineCHart = LineChart;
 
 //time formating
 //import  moment from 'react-moment';
@@ -66,7 +67,6 @@ class HomePage extends Component {
 
   componentDidMount() {
     fetch('/users')
-      .then(res => res.json())
       .then(users => this.setState({ users }));
       this.addProducts(5);
       this.state.products = [];
@@ -79,16 +79,16 @@ addProducts = (quantity) => {
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", 'http://127.0.0.1:3001/api/record/', true);
+    xhr.open("GET", 'http://10.0.0.20:3001/api/record/', true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
-
+    xhr.withCredentials = true;
     
 
     console.log(xhr);
     var data;
     var jsonResponse;
-    xhr.onreadystatechange = (jsonResponse) => {
+    xhr.onload = (jsonResponse) => {
       console.log('in xhr.onload')
       if(xhr.readyState === 4){
         console.log('in state 4');
@@ -172,7 +172,6 @@ class RecordTable extends Component{
 
   componentDidMount() {
     fetch('/users')
-      .then(res => res.json())
       .then(users => this.setState({ users }));
   }
 
@@ -181,7 +180,7 @@ class RecordTable extends Component{
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", 'http://127.0.0.1:3001/api/filter/Filterrecords/?fname=a&lname=&zip=', true)
+    xhr.open("GET", 'http://10.0.0.20:3001/api/filter/Filterrecords/?fname=a&lname=&zip=', true)
     xhr.setRequestHeader('Content-type','application/json');
     xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
 
@@ -205,7 +204,7 @@ class RecordTable extends Component{
 
     var xhr = new XMLHttpRequest();
 
-    let url = "http://127.0.0.1:3001/api/filter/Filterrecords/?" 
+    let url = "http://10.0.0.20:3001/api/filter/Filterrecords/?" 
     url += 'fname=' + this.state.fname;
     url += '&lname=' + this.state.lname;
     url += '&zip=' + this.state.zip;
@@ -219,7 +218,7 @@ class RecordTable extends Component{
 
     console.log(xhr);
 
-    xhr.onreadystatechange = (e) => {
+    xhr.onload = (e) => {
       if(xhr.readyState === 4){
         if(xhr.status === 200){
           var data = xhr.responseText;
@@ -284,6 +283,7 @@ class RecordTable extends Component{
     //defines the function that runs when a row is clicked.
     onRowClick: (row) => {
       console.log('hewwo');
+alert(row.id);
       this.props.setRecID(row.id);
       this.props.ToggleFn();
       renderObject.forceUpdate();
@@ -337,15 +337,10 @@ class RecordTable extends Component{
 class PRecord extends Component {
 
 
-  fname = "";
-  phone = "";
-  address = "";
 
    constructor(props) {
     super(props);
-    this.setRecordValues();
-    this.getRecord();
-    //this.setCurrentRecord();
+    
     this.state = {
       heartRecords: [],
       currentRecord: 0,
@@ -353,6 +348,8 @@ class PRecord extends Component {
       rawHdata: []
 
     }
+    //this.setRecordValues();
+    this.getRecord();
   }
 
 
@@ -362,7 +359,7 @@ class PRecord extends Component {
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", `http://127.0.0.1:3001/api/record/${this.props.recordID}`, true);
+    xhr.open("GET", `http://10.0.0.20:3001/api/record/${this.props.recordID}`, true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
 
@@ -371,8 +368,7 @@ class PRecord extends Component {
     console.log(xhr);
     var data;
     var jsonResponse;
-    xhr.onreadystatechange = (jsonResponse) => {
-      console.log('in xhr.onload')
+    xhr.onload = (jsonResponse) => {
       if(xhr.readyState === 4){
         console.log('in state 4');
         if(xhr.status === 200){
@@ -400,34 +396,41 @@ class PRecord extends Component {
 
 //---------------------------------HEART RECORD ------------------------------------
 
-    let xhr1 =  new XMLHttpRequest();
-    xhr1.open("GET", `http://localhost:3001/api/heartrecord/${this.props.recordID}`, true);
+    var xhr1 =  new XMLHttpRequest();
+    xhr1.open("GET", `http://10.0.0.20:3001/api/heartrecord/${this.props.recordID}`, true);
     xhr1.setRequestHeader('Content-type','application/json');
     xhr1.setRequestHeader('Access-Control-Allow-Methods','GET');
 
     
 
     console.log(xhr1);
-    let data1;
-    let jsonResponse1;
-    xhr1.onreadystatechange = (jsonResponse1) => {
+    var data1;
+    var jsonResponse1;
+    xhr1.onload = (jsonResponse1) => {
       console.log('in xhr.onload')
       if(xhr.readyState === 4){
         console.log('in state 4');
         if(xhr.status === 200){
 
           data1 = xhr1.responseText;
+console.log("PAIN HERE");
+	  console.log((data1));
+	  console.log(JSON.parse(data1));
+
           jsonResponse1 = JSON.parse(data1);
           console.log('jsondata');
-          console.log(jsonResponse1.data); 
+          console.log(jsonResponse1); 
 
           //let products = this.state.products.splice();
 
           //console.log(this);
-          let hr = {}
+          let hr = {};
           
-          hr = jsonResponse1.data;
-          this.setState({heartRecords: jsonResponse1.data})
+          hr.heartRecords = jsonResponse1.data;
+          this.setState({heartRecords: hr.heartRecords});	
+	  this.setState(hr[0]);
+	  console.log('this.state.hr');
+	  console.log(this.state.heartRecords);
 
           let tempArray = [];
           this.state.heartRecords[0].raw_heart_data.data.forEach(function(ele, index){
@@ -435,15 +438,19 @@ class PRecord extends Component {
           }  
           )
           this.setState({rawHdata: tempArray});
+	  this.setState({ currentRecord: hr.heartRecords[0] });
+          console.log('this.state.currentRecord');
+	  console.log(this.state.currentRecord);
 
-        
+
       }
     }
     
   }
     xhr1.send('xhr', xhr); 
-}
 
+	
+}
 
   GoBack = () => {
     this.tableRecord = true;
@@ -459,9 +466,10 @@ class PRecord extends Component {
     //console.log(Date('2018-03-31T20:50:59.993Z'));
     let tempArray = [];
 
-    let i = this.state.heartRecords[0].id;
-
-    this.state.heartRecords[e.target.selectedIndex].raw_heart_data.data.forEach(function(ele, index){
+    //let i = this.state.heartRecords[0].id;
+        console.log('this.state.heartRecords');
+	console.log(this.state.heartRecords);
+    this.state.heartRecords.heartRecords[0].raw_heart_data.data.forEach(function(ele, index){
       tempArray.push({x:index*5 ,y:ele});
     }  
     )
@@ -490,26 +498,19 @@ class PRecord extends Component {
       <div>
         {this.state.address}
       </div>
+      <div>
       <select value={this.state.currentRecord} onChange={this.setCurrentRecord}>
 
         {this.state.heartRecords.map( (hr) => <option value = 
           {hr.created_at} >
           {hr.created_at}  </option> )}
 
-      </select>
+      </select>        
+      </div>
+      
+      <div>
 
-
-        <LineChart
-        
-        grid
-        lineColors={['red']}
-        verticalGrid
-        axes
-        axisLabels={{x: 'My x Axis', y: 'My y Axis'}}
-        width={600}
-        height={300}
-        data={[this.state.rawHdata]}
-        />  
+      </div>
 
     </div>
     )
