@@ -9,8 +9,12 @@ import { BrowserRouter, HashRouter, Route, Switch, Link, withRouter, } from 'rea
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 //Graphing in D3
-import {LineChart} from 'react-easy-chart';
-window.LineCHart = LineChart;
+//import {LineChart} from 'react-easy-chart';
+//window.LineCHart = LineChart;
+
+import LineChart from 'react-linechart';
+import '../node_modules/react-linechart/dist/styles.css';
+
 
 //time formating
 //import  moment from 'react-moment';
@@ -283,7 +287,7 @@ class RecordTable extends Component{
     //defines the function that runs when a row is clicked.
     onRowClick: (row) => {
       console.log('hewwo');
-alert(row.id);
+//alert(row.id);
       this.props.setRecID(row.id);
       this.props.ToggleFn();
       renderObject.forceUpdate();
@@ -432,16 +436,24 @@ console.log("PAIN HERE");
 	  console.log('this.state.hr');
 	  console.log(this.state.heartRecords);
 
-          let tempArray = [];
+          let tempArray = [
+		{									
+			color: "red", 
+			points: [] 
+		}
+	  ];
+
           this.state.heartRecords[0].raw_heart_data.data.forEach(function(ele, index){
-            tempArray.push({x:index*5 ,y:ele});
+            tempArray[0].points.push({x:index*5 ,y:ele});
           }  
           )
           this.setState({rawHdata: tempArray});
 	  this.setState({ currentRecord: hr.heartRecords[0] });
           console.log('this.state.currentRecord');
 	  console.log(this.state.currentRecord);
-
+	
+	  console.log('this.state.rawHdata');
+	  console.log(this.state.rawHdata);
 
       }
     }
@@ -464,14 +476,19 @@ console.log("PAIN HERE");
 
     this.setState({ currentRecord: e.target.value });
     //console.log(Date('2018-03-31T20:50:59.993Z'));
-    let tempArray = [];
+    let tempArray = [
+		{									
+			color: "steelblue", 
+			points: [] 
+		}
+	  ];
 
     //let i = this.state.heartRecords[0].id;
         console.log('this.state.heartRecords');
 	console.log(this.state.heartRecords);
-    this.state.heartRecords.heartRecords[0].raw_heart_data.data.forEach(function(ele, index){
-      tempArray.push({x:index*5 ,y:ele});
-    }  
+    this.state.heartRecords[e.target.selectedIndex].raw_heart_data.data.forEach(function(ele, index){
+            tempArray[0].points.push({x:index*5 ,y:ele});
+          }  
     )
     this.setState({rawHdata: tempArray});
 
@@ -483,7 +500,17 @@ console.log("PAIN HERE");
 
   render(){
 
-    console.log(this.state.heartRecords);
+    
+	
+	let t = [
+	{									
+	color: "red", 
+	points: [{x: 1, y: 2}, {x: 3, y: 5}, {x: 7, y: -3}] 
+	}
+	];
+	
+console.log(t);
+
   return (
     <div> 
     <button onClick={this.GoBack}>
@@ -509,7 +536,15 @@ console.log("PAIN HERE");
       </div>
       
       <div>
-
+	<LineChart 
+	width={600}
+        height={300}
+	interpolate={'linear'}
+	xLabel={"milliseconds"}
+	yLabel={"Voltage"}
+	hidePoints={true}
+	data={this.state.rawHdata}
+	/>
       </div>
 
     </div>
