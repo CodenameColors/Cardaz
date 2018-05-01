@@ -24,6 +24,7 @@ import time
 import numpy as np
 import socket
 import struct
+import array
 
 UDP_IP = "0.0.0.0" #change to needed ip.
 UDP_PORT = 9000
@@ -35,7 +36,32 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
     def pressedStartButton(self):
         print("first name:  " + self.first_name_TB.text() + "\n")
         print("last name:  " + self.last_name_TB.text() + "\n")
-        self.form_tabcontrol.setCurrentIndex(3)
+        
+        conn = psycopg2.connect(host='localhost', database='cardaz', user='antonio', password='19528974')
+        print("connecting to PSQL database")
+        cur = conn.cursor()
+        #insert into patient
+        query = "insert into patient(first_name, mi, last_name, phone_number)"
+        query +=" Values('%s', '%s', '%s', '%s') returning id;" % (self.first_name_TB.text(), self.mi_TB.text(), self.last_name_TB.text(), self.phone_TB.text())
+        
+        test = cur.execute(query)
+        conn.commit()
+        id = 0;
+        for record in cur:
+            print(record)
+            id = record[0]
+        
+        #insert into address
+        query = "insert into address(patient_id, street, city, state, zip_code)"
+        query +=" Values(%d, '%s', '%s', '%s', '%s') returning id;" % (id , self.street_TB.text(), self.street_TB_2.text(), self.state_CB.currentText(), self.phone_TB_2.text())
+        
+        test = cur.execute(query)
+        conn.commit()
+        for record in cur:
+            print(record)
+            id = record[0]
+        
+        self.pressedYes()
         #print("testing")
     
     #When the user has pressed the "login button"
@@ -192,8 +218,22 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
         print("connecting to PSQL database")
         cur = conn.cursor()
         
-        query = 'INSERT into patient(first_name, mi, last_name, phone_number)'
-        query +=" Values('%s', '%s', '%s', '%s') returning id;" %  ('luis', 'A', 'morales', '5089880582')
+        arrs = np.array([17,24,121,1,12,222,34,76])
+        
+        sss = array.array('B',arrs).tostring()
+        print(sss)
+        
+        hexstr = ''.join('{:2x}'.format(i) for i in arrs)
+        
+        #INSERT INTO heartdata(patient_id, bpm, raw_heart_data) Values(21, 73,
+        #( select decode(replace('111879 1 cde224c', ' ', ''), 'hex') )  );
+
+        
+        query = 'INSERT into heartdata(patient_id, bpm, raw_heart_data)'
+        query += " values(21, 555, ( select decode(replace('%s', ' ', ''), 'hex') )  );" % hexstr
+ 
+        #query +=" Values('%s', '%s', '%s', '%s') returning id;" %  ('luis', 'A', 'morales', '5089880582')
+        print('query:   ' + query)
         
         test = cur.execute(query)
         conn.commit()
@@ -202,15 +242,10 @@ class Form1(QMainWindow, cardaz_app.Ui_cardaz_app):
             print(record)
             id = record[0]
         
-        query = 'INSERT into address(patient_id, street, city, state, zip_code)'
-        query +=" Values(%d, '%s', '%s', '%s', '%s') returning id;" %  (id,'522 Propect St', 'Methuen', 'Ma', '01844')
+        #query = 'INSERT into address(patient_id, street, city, state, zip_code)'
+        #query +=" Values(%d, '%s', '%s', '%s', '%s') returning id;" %  (id,'522 Propect St', 'Methuen', 'Ma', '01844')
         
-        test = cur.execute(query)
-        conn.commit()
-        id = 0;
-        for record in cur:
-            print(record)
-            id = record[0]
+
         
     def updateRecord(self):
         conn = psycopg2.connect(host='localhost', database='cardaz', user='antonio', password='19528974')

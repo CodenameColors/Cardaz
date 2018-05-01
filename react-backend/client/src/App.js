@@ -83,7 +83,7 @@ addProducts = (quantity) => {
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", 'http://10.0.0.20:3001/api/record/', true);
+    xhr.open("GET", 'http://192.168.1.145:3001/api/record/', true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
     xhr.withCredentials = true;
@@ -184,7 +184,7 @@ class RecordTable extends Component{
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", 'http://10.0.0.20:3001/api/filter/Filterrecords/?fname=a&lname=&zip=', true)
+    xhr.open("GET", 'http://192.168.1.145:3001/api/filter/Filterrecords/?fname=a&lname=&zip=', true)
     xhr.setRequestHeader('Content-type','application/json');
     xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
 
@@ -208,7 +208,7 @@ class RecordTable extends Component{
 
     var xhr = new XMLHttpRequest();
 
-    let url = "http://10.0.0.20:3001/api/filter/Filterrecords/?" 
+    let url = "http://192.168.1.145:3001/api/filter/Filterrecords/?" 
     url += 'fname=' + this.state.fname;
     url += '&lname=' + this.state.lname;
     url += '&zip=' + this.state.zip;
@@ -363,7 +363,7 @@ class PRecord extends Component {
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", `http://10.0.0.20:3001/api/record/${this.props.recordID}`, true);
+    xhr.open("GET", `http://192.168.1.145:3001/api/record/${this.props.recordID}`, true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.setRequestHeader('Access-Control-Allow-Methods','GET');
 
@@ -401,7 +401,7 @@ class PRecord extends Component {
 //---------------------------------HEART RECORD ------------------------------------
 
     var xhr1 =  new XMLHttpRequest();
-    xhr1.open("GET", `http://10.0.0.20:3001/api/heartrecord/${this.props.recordID}`, true);
+    xhr1.open("GET", `http://192.168.1.145:3001/api/heartrecord/${this.props.recordID}`, true);
     xhr1.setRequestHeader('Content-type','application/json');
     xhr1.setRequestHeader('Access-Control-Allow-Methods','GET');
 
@@ -525,11 +525,11 @@ console.log("PAIN HERE");
       
       <div>
 	<LineChart 
-	width={600}
-        height={300}
+	width="600px"
+        height="300px"
 	interpolate={'linear'}
 	xLabel={"milliseconds"}
-	yLabel={"Voltage"}
+	yLabel={"millivolts"}
 	hidePoints={true}
 	data={this.state.rawHdata}
 	/>
